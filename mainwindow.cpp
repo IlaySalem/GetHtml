@@ -9,11 +9,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished,this,[=](QNetworkReply* reply){
+        if(reply->error() != QNetworkReply::NoError){
+            qDebug() << reply->error() << reply->errorString();
+            return;
+        }
         QByteArray arr = reply->readAll();
-        ui->plainTextEdit->clear();
         qDebug() << "arr: " << arr;
+        ui->plainTextEdit->clear();
         ui->plainTextEdit->appendPlainText(QTextCodec::codecForMib(106)->toUnicode(arr));
-        //ui->plainTextEdit->appendHtml(QTextCodec::codecForMib(106)->toUnicode(arr));
     });
 }
 
